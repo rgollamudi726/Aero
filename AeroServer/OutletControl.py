@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import asyncio
+import time
 
 Outlet1 = 11 # Grow Light1
 Outlet2 = 13 # Pump
@@ -13,9 +14,33 @@ def initGPIOLock():
     global GPIOLock3
     global GPIOLock4
     GPIOLock1 = asyncio.Lock()
+    while( not GPIOLock1.acquire()):
+        print("GPIO LOCK1 not acquired")
+    while(GPIOLock1.locked()):
+        print("GPIO1 is locked")
+        GPIOLock1.release()
+
     GPIOLock2 = asyncio.Lock()
+    while( not GPIOLock2.acquire()):
+        print("GPIO LOCK2 not acquired")
+    while(GPIOLock2.locked()):
+        print("GPIO2 is locked")
+        GPIOLock2.release()
+
     GPIOLock3 = asyncio.Lock()
+    while( not GPIOLock3.acquire()):
+        print("GPIO LOCK3 not acquired")
+    while(GPIOLock3.locked()):
+        print("GPIO3 is locked")
+        GPIOLock3.release()
+
     GPIOLock4 = asyncio.Lock()    
+    while( not GPIOLock4.acquire()):
+        print("GPIO LOCK4 not acquired")
+    while(GPIOLock4.locked()):
+        print("GPIO4 is locked")
+        GPIOLock4.release()
+
 
 def isGPIOLocked(Outlet):
     global GPIOLock1
@@ -44,21 +69,28 @@ def OutletOn(Outlet):
     global GPIOLock1
     global GPIOLock2
     global GPIOLock3
-    global GPIOLock4
+    global GPIOLock4    
 
     if(Outlet == Outlet1):
-        GPIOLock=GPIOLock1
+        GPIOLock=GPIOLock1        
     elif(Outlet == Outlet2):
-        GPIOLock=GPIOLock2
+        GPIOLock=GPIOLock2        
     elif(Outlet == Outlet3):
-        GPIOLock=GPIOLock3
+        GPIOLock=GPIOLock3        
     elif(Outlet == Outlet4):
-        GPIOLock=GPIOLock4
-
-    GPIOLock.acquire()
+        GPIOLock=GPIOLock4        
+    
+    while(not GPIOLock.acquire()):
+        print("Failed to acquire lock\n")        
+    
     GPIO.output(Outlet, GPIO.LOW)
-    staus = GPIO.input(Outlet)
-    GPIOLock.release()
+    status = GPIO.input(Outlet)
+    while(GPIOLock.locked()):
+        print("Failed to release lock\n")
+        GPIOLock.release()        
+        #time.sleep(5)
+
+    time.sleep(0.05)
     if(status == GPIO.LOW):        
         return True
     else:        
@@ -71,18 +103,25 @@ def OutletOff(Outlet):
     global GPIOLock4
 
     if(Outlet == Outlet1):
-        GPIOLock=GPIOLock1
+        GPIOLock=GPIOLock1       
     elif(Outlet == Outlet2):
-        GPIOLock=GPIOLock2
+        GPIOLock=GPIOLock2        
     elif(Outlet == Outlet3):
-        GPIOLock=GPIOLock3
+        GPIOLock=GPIOLock3        
     elif(Outlet == Outlet4):
-        GPIOLock=GPIOLock4
+        GPIOLock=GPIOLock4        
     
-    GPIOLock.acquire()
+    while(not GPIOLock.acquire()):
+        print("Failed to acquire lock\n")        
+    
     GPIO.output(Outlet, GPIO.HIGH)
-    staus = GPIO.input(Outlet)
-    GPIOLock.release()
+    status = GPIO.input(Outlet)
+
+    while(GPIOLock.locked()):
+        print("Failed to release lock\n")
+        GPIOLock.release()
+        
+    
     if(status == GPIO.HIGH):        
         return True
     else:    

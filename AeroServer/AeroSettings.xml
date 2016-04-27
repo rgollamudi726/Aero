@@ -2,13 +2,14 @@
 <AeroSettings>
   <device name='Grow Light'>
     <title lang='en'>Grow Light 1</title>
-    <TurnOnTime>7:00 AM</TurnOnTime>
-    <TurnOffTime>7:00 PM</TurnOffTime>
+    <TurnOnTime>7:00</TurnOnTime>
+    <TurnOffTime>19:00</TurnOffTime>
     <Outlet>1</Outlet>
   </device>
 
   <device name='Pump'>
     <title lang='en'>Pump 1</title>
+    <ContinuousOperation>YES</ContinuousOperation>
     <OnTime>60</OnTime>
     <OffTime>300</OffTime>
     <Outlet>2</Outlet>
